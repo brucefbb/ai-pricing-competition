@@ -24,7 +24,7 @@ jobs:
 
       - name: Run scraping (offline-safe)
         env:
-              NO_NET:"1"
+          NO_NET: "1"              # ✅ 正确：env 下用 key: "value"
         run: python src/scrape_pricing.py
 
       - name: Run cleaning & regressions
