@@ -1,0 +1,41 @@
+name: Run AI Pricing Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run scraping
+        run: python src/scrape_pricing.py
+
+      - name: Run cleaning & regressions
+        run: python src/clean_and_regress.py
+
+      - name: Run visualization
+        run: python src/visualize.py
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: outputs
+          path: |
+            data/raw/pricing_raw.csv
+            data/processed/pricing_cleaned.csv
+            data/processed/pricing_trend.png
